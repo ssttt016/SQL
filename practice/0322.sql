@@ -1,290 +1,141 @@
-CREATE TABLE dept_temp AS (SELECT * FROM dept);
+/* 
+1.
+1) 테이블
+2) 외래키(FK)
+3) 널(NULL)
 
-INSERT INTO dept_temp (deptno, dname, loc)
-values(50, 'DATABASE', 'SEOUL');
+2-2
+1) 문자셋(CharacterSet)
+2) 문자셋(CharSet)
 
-INSERT INTO dept_temp (deptno, dname, loc)
-values(70, 'WEB', NULL);
+2-3.
+1) VARCHAR2(N)
+2) CHAR(N)
 
-INSERT INTO dept_temp (deptno, dname, loc)
-values(80, 'MOBILE', '');
+2-4.
+1) 제약조건
+2) 기본키
+3) 외래키
 
-INSERT INTO dept_temp (deptno,loc)
-values(90,'INCHEON');
+2-5.
+1) 무결성
+2) 무결성
+3) 무결성
 
-DELETE DEPT_TEMP WHERE DEPTNO = 50 AND LOC = 'SEOUL';
-
-SELECT * FROM DEPT_TEMP;
-
-
-CREATE TABLE EMP_TEMP
-AS SELECT * 
-FROM EMP 
-WHERE 1<>1;
-
-SELECT * FROM EMP_TEMP;
-
-INSERT INTO EMP_TEMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
-VALUES(9999,'홍길동', 'PRESIDENT', NULL, '2001/01/01', 5000,1000,10);
-
-INSERT INTO EMP_TEMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
-VALUES(2111,'이순신', 'MANAGER', 9999, TO_DATE('07/01/1999','MM/DD/YYYY'), 4000,NULL,20);
-
-INSERT INTO EMP_TEMP (EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
-VALUES(3111,'심청이', 'MANAGER', 9999, SYSDATE, 4000,NULL,30);
-
-
-
-INSERT INTO EMP_TEMP(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
-SELECT E.EMPNO,E.ENAME,E.JOB,E.MGR ,E.HIREDATE ,E.SAL ,E.COMM ,E.DEPTNO 
-FROM EMP E, SALGRADE S
-WHERE E.SAL BETWEEN S.LOSAL AND S.HISAL 
-AND S.GRADE = 1;
-
-SELECT * FROM EMP_TEMP;
-
-SELECT *
-FROM EMP e WHERE rownum <3;
---UPDATE문 : 필터된 데이터에 대해서 레코드 값을 수정
-
-CREATE TABLE DEPT_TEMP2   --테스트 개발을 위한 임시 테이블 생성
-AS (SELECT * FROM DEPT)
-;
-
-SELECT * FROM DEPT_TEMP2   --테스트 개발을 위한 임시 테이블 확인
-;
-
-DROP TABLE dept_temp2;
-
-/*
- * UPDATE .....
- * SET..... 
- * UPDATE SET 이게 셋트임
- */
-
-UPDATE dept_temp2
-SET dname='DATABASE',loc = 'SEOUL'
-WHERE deptno = 40;
-
-
-
-
--- 서브쿼리를 이용하여 UPDATE 
-
-UPDATE dept_temp2
-SET (dname, loc) = (SELECT dname, loc FROM dept WHERE deptno = 40)
-WHERE deptno = 40;
-
-/*
-DELTE 구문으로 테이블에서 값을 제거
-
-보통의 경우, DELETE보다는 UPDATE 구문으로 상태 값을 변경
-
-예시 : 근무/휴직/퇴사 등의 유형으로 값을 변경
+2-6.
+1) Unique
+2) Not Null
+3) INDEX
 */
 
-SELECT *
-FROM emp_temp2;
 
-CREATE TABLE emp_temp2 AS (SELECT * FROM emp);
-
-SELECT * FROM emp_temp2;
-
-DELETE FROM emp_temp2
-WHERE job = 'MANAGER';
-
-ROLLBACK;
-COMMIT;
-
---WHERE 조건을 좀 더 복잡하게 주고 DELETE 실행
-
-DELETE FROM emp_temp2
-WHERE empno IN (
-SELECT e.empno 
-FROM emp_temp2 e, SALGRADE s
-WHERE e.sal BETWEEN s.LOSAL AND s.HISAL
-AND s.grade = 3 AND deptno = 30);
-
-SELECT e.empno 
-FROM emp_temp2 e, SALGRADE s
-WHERE e.sal BETWEEN s.LOSAL AND s.HISAL
-AND s.grade = 3 AND deptno = 30;
-
-
-
---CREATE 문을 정의 : 기존에 없는 테이블 구조를 생성
---데이터는 없고, 테이블의 컬럼과 데이터타입, 제약조건 등의 구조를 생성
-
-CREATE TABLE emp_new
-(
-empno     number(4),
-ename     varchar(10),
-job       varchar(9),
-mgr       number(4),
-hiredate  DATE,
-salgrade  number(7,2),
-comm      number(7,2),
-deptno    number(2)
-);
-
-SELECT * FROM emp_new;
-
-SELECT * FROM emp WHERE rownum <= 5;
-
-
-ALTER TABLE emp_new
-ADD hp varchar(20);
-
-ALTER TABLE EMP_NEW 
-RENAME COLUMN hp TO TEL_NO; 
-
-ALTER TABLE EMP_NEW 
-MODIFY empno number(5);
-
-ALTER TABLE EMP_NEW DROP COLUMN tel_no;
-
-SELECT * FROM emp_new;
-
-
-CREATE SEQUENCE seq_deptno
-INCREMENT BY 1
-START WITH 1
-MAXVALUE 99
-MINVALUE 1
-nocycle nocache;
-
-INSERT INTO dept_temp2 (deptno, dname, loc)
-VALUES (seq_deptno.nextval, 'DATABASE', 'SEOUL');
-
-INSERT INTO dept_temp2 (deptno, dname, loc)
-VALUES (seq_deptno.nextval, 'WEB', 'BUSAN');
-
-INSERT INTO dept_temp2 (deptno, dname, loc)
-VALUES (seq_deptno.nextval, 'MOBILE', 'SEUNGSOO');
-
-SELECT * FROM dept_temp2;
-
-
-
-CREATE TABLE login 
-(
-log_id   varchar2(20) NOT NULL,
-log_pwd  varchar2(20) NOT NULL,
-tel      varchar2(20)
-);
-
-INSERT INTO login (log_id, log_pwd, tel)
-VALUES ('test01', '1234', '010-1234-2343');
-
-INSERT INTO login (log_id, log_pwd)
-VALUES ('test01','1234');
-
-SELECT * FROM login;
-
-ALTER TABLE login 
-MODIFY tel NOT NULL;
-
-UPDATE login 
-SET tel = '010-2345-6789'
-WHERE log_id = 'test01';
-
-
-
-SELECT * --owner, constraint_name, constraint_type, table_name
-FROM USER_CONSTRAINTS 
-WHERE table_name = 'LOGIN';
-
-ALTER TABLE login 
-MODIFY (tel CONSTRAINT tel_nn NOT null);
-
-ALTER TABLE LOGIN DROP CONSTRAINT SYS_C007040;
-
-
-CREATE TABLE log_unique
-(
-log_id    varchar2(20) UNIQUE,
-log_pwd   varchar2(20) NOT NULL,
-tel       varchar2(20)
-);
-
-
-SELECT *
-FROM USER_CONSTRAINTS 
-WHERE table_name = 'LOG_UNIQUE';
-
-INSERT INTO LOG_UNIQUE (log_id, log_pwd, tel)
-VALUES ('test01', 'pwd123', '010-1234-1222');
-
-INSERT INTO LOG_UNIQUE(log_id, log_pwd, tel)
-VALUES ('test02', 'pwd123', '010-1234-1222');
-
-INSERT INTO LOG_UNIQUE(log_id, log_pwd, tel)
-VALUES ('test03', 'pwd123', '010-1234-1222');
-
-INSERT INTO LOG_UNIQUE(log_id, log_pwd, tel)
-VALUES (null, 'pwd123', '010-1234-1222');
-
-
-UPDATE log_unique 
-SET log_id = 'test_id_new'
-WHERE log_id IS NULL;
-
-SELECT * FROM log_unique;
-
-
-ALTER TABLE log_unique 
-MODIFY (tel unique);
-
-CREATE TABLE log_pk 
-(
-log_id   varchar2(20) PRIMARY KEY,
-log_pwd  varchar2(20) NOT NULL,
-tel      varchar2(20)
-);
-
-
-INSERT INTO log_pk (log_id, log_pwd, TEL)
-VALUES ('pk01','pwd01','010-1234-1232');
-
-INSERT INTO log_pk (log_id, log_pwd, TEL)
-VALUES ('pk01','pwd02','010-3434-1232');
-
-INSERT INTO log_pk (log_id, log_pwd, TEL)
-VALUES (NULL ,'pwd01','010-1234-1232');
-
-INSERT INTO log_pk (log_id, log_pwd, TEL)
-VALUES ('pk01','pwd01','010-1234-1232');
-
-
-SELECT * FROM emp_temp ;
-
-INSERT INTO emp_temp (empno, ename, job, mgr, hiredate, sal, comm, deptno)
-VALUES (3333,'ghost','surprise',9999,sysdate,1200,NULL,99);
-
-INSERT INTO emp (empno, ename, job, mgr, hiredate, sal, comm, deptno)
-VALUES (3333,'ghost','surprise',9999,sysdate,1200,NULL,99);
-
-
---index
-
-CREATE INDEX idx_emp_job
-ON emp(job);
-
-
-SELECT *
-FROM USER_INDexes
-WHERE TABLE_NAME IN ('emp','dept');
-
-
-CREATE VIEW vw_emp
-AS (SELECT empno, ename, job, deptno
+--8p-1
+SELECT DEPTNO, TRUNC(AVG(SAL))AS AVG_SAL ,MAX(SAL) AS MAX_SAL,MIN(SAL) AS MIN_SAL, COUNT(EMPNO) AS CNT
 FROM EMP
-WHERE deptno = 10);
+GROUP BY DEPTNO;
 
-SELECT * FROM vw_emp;
+--8p-2
+SELECT JOB, COUNT(*)
+FROM EMP
+GROUP BY JOB
+HAVING COUNT(JOB)>=3;
 
-SELECT *
-FROM user_VIEWS WHERE view_name = 'vw_emp';
+--8p-3
+SELECT  HIREDATE_YEAR,DEPTNO, COUNT(*) AS COUNT
+FROM (
+    SELECT DEPTNO, EXTRACT(YEAR FROM HIREDATE) AS HIREDATE_YEAR
+     FROM EMP
+)
+GROUP BY DEPTNO , HIREDATE_YEAR;
 
-FROM (SELECT * FROM EMP
-ORDER BY sal DESC ) A
+
+--9p-4
+SELECT 
+CASE 
+WHEN COMM IS NOT NULL THEN 'Y'
+ELSE 'N' END AS "추가수당 여부", 
+COUNT(*) AS "인원 수" 
+FROM EMP 
+GROUP BY 
+CASE 
+WHEN COMM IS NOT NULL THEN 'Y'
+ELSE 'N' END;
+    
+--9p-5
+SELECT DEPTNO, EXTRACT(YEAR FROM HIREDATE) AS "HIRE_YEAR", COUNT(*) AS "CNT", 
+MAX(SAL),SUM(SAL),AVG(SAL)
+FROM EMP 
+GROUP BY ROLLUP (DEPTNO, EXTRACT(YEAR FROM HIREDATE))
+ORDER BY DEPTNO;
+
+
+--10p-1
+--ORACLE
+SELECT A.DEPTNO, B.DNAME, A.EMPNO, A.ENAME, A.SAL
+FROM EMP A, DEPT B
+WHERE A.DEPTNO  = B.DEPTNO 
+AND SAL>2000;
+
+--표준
+SELECT A.DEPTNO, DNAME, EMPNO, ENAME, SAL
+FROM EMP A INNER JOIN DEPT B
+ON A.DEPTNO  = B.DEPTNO 
+WHERE SAL>2000;
+
+--10p-2
+SELECT DEPTNO, DNAME, TRUNC(AVG(SAL)), MAX(SAL), MIN(SAL), COUNT(EMPNO)
+FROM EMP NATURAL JOIN DEPT
+GROUP BY DEPTNO, DNAME ;
+
+
+--11p-3
+SELECT A.DEPTNO, DNAME, EMPNO, ENAME, JOB, SAL
+FROM EMP A RIGHT JOIN DEPT B
+ON A.DEPTNO = B.DEPTNO ;
+
+
+--11p-4
+SELECT d.DEPTNO, d.DNAME , e1.EMPNO , e1.ENAME, e1.MGR, e1.SAL, e1.DEPTNO, s.LOSAL, s.HISAL, s.GRADE, e1.MGR AS MGR_EMPNO, e2.ENAME AS MGR_NAME
+FROM EMP e1 LEFT JOIN EMP e2 ON e1.MGR = e2.EMPNO
+LEFT JOIN SALGRADE s ON e1.SAL >= s.LOSAL AND e1.SAL <= s.HISAL
+RIGHT JOIN DEPT d ON e1.DEPTNO = d.DEPTNO
+ORDER BY 1, 3;
+
+--12P. -1
+SELECT e.job,  e.empno, e.ename, e.sal,  d.deptno, d.dname
+FROM emp e
+JOIN dept d ON e.deptno = d.deptno
+WHERE e.job = (SELECT job FROM emp WHERE ename = 'ALLEN');
+
+
+--12P. -2
+SELECT E.EMPNO, E.ENAME, D.DNAME, E.HIREDATE, D.LOC, E.SAL, S.GRADE
+FROM EMP E
+JOIN DEPT D ON E.DEPTNO = D.DEPTNO
+JOIN SALGRADE S ON E.SAL BETWEEN S.LOSAL AND S.HISAL
+WHERE E.SAL > (SELECT AVG(SAL) FROM EMP);
+
+--13p-3
+SELECT e.EMPNO, e.ENAME, e.JOB, e.DEPTNO, d.DNAME, d.LOC
+FROM EMP e ,DEPT d
+WHERE e.DEPTNO = d.DEPTNO
+AND e.DEPTNO = 10
+AND e.JOB NOT IN
+(SELECT JOB FROM EMP WHERE DEPTNO = 30);
+
+
+--13p-4
+SELECT EMPNO, ENAME, SAL, GRADE
+FROM EMP E
+JOIN SALGRADE S ON E.SAL BETWEEN S.LOSAL AND S.HISAL 
+WHERE SAL > (SELECT MAX(SAL)
+FROM EMP
+WHERE JOB IN ('SALESMAN')
+GROUP BY JOB);
+
+
+--13p-5
+SELECT E.EMPNO, E.ENAME, E.SAL, S.GRADE
+FROM EMP E 
+JOIN SALGRADE S ON E.SAL BETWEEN S.LOSAL AND S.HISAL 
+WHERE SAL > ALL(SELECT SAL FROM EMP WHERE JOB IN ('SALESMAN'));
